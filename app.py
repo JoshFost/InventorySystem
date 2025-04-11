@@ -2,6 +2,7 @@ from flask import Flask, redirect, url_for, render_template, request, flash
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from login import User 
 import sqlite3
+from inventory import create_item, view_items, edit_item, delete_item
 
 
 app = Flask(__name__)
@@ -105,6 +106,56 @@ def logout():
 @app.route('/')
 def home():
     return "Hello, Flask! Your app is working."
+
+#items routes
+#view items
+@app.route('/items', methods=['GET'])
+@login_required
+def items():
+    items = view_items()
+    return render_template('items.html', items=items)
+
+#add item
+@app.route('/add_item', methods=['GET', 'POST'])
+@login_required
+def add_item_route():
+    if request.method == 'POST':
+        name = request.form['name']
+        description = request.form['description']
+        quantity = request.form['quantity']
+        price = request.form['price']
+        create_item(name, description, quantity, price)
+        flash("Item added successfully.")
+        return redirect(url_for('items'))
+    return render_template('add_item.html')
+
+#edit item
+@app.route('/edit_item/<int:item_id>', methods=['GET', 'POST'])
+@login_required
+def edit_item_route(item_id):
+    if request.method == 'POST':
+        name = request.form['name']
+        description = request.form['description']
+        quantity = request.form['quantity']
+        price = request.form['price']
+        edit_item(item_id, name, description, quantity, price)
+        flash("Item updated successfully.")
+        return redirect(url_for('items'))
+    
+    conn = sqlite3.connect('inventory.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM items WHERE id=?", (item_id,))
+    item = cursor.fetchone()
+    conn.close()
+    return render_template('edit_item.html', item=item)
+
+#delete item
+@app.route('/delete_item/<int:item_id>', methods=['POST'])
+@login_required
+def delete_item_route(item_id):
+    delete_item(item_id)
+    flash("Item deleted successfully.")
+    return redirect(url_for('items'))
 
 if __name__ == '__main__':
     app.run(debug=True)
