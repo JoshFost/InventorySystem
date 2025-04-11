@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <!-- Welcome Message -->
+        <h1 class="display-4 fw-bold">Welcome back, {{ current_user.username }}</h1>
+        <p class="lead text-muted mb-5">Here's an overview of your inventory</p>
+
+        <!-- Metric Cards -->
+        <div class="row mt-4">
+            <!-- Total Products -->
+            <div class="col-md-3 mb-4">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        <h5 class="card-title text-muted">Total Products</h5>
+                        <h3 class="card-text">{{ total_products }}</h3>
+                        <small class="text-muted">Unique products in inventory</small>
+                    </div>
+                </div>
+            </div>
+            <!-- Total Items -->
+            <div class="col-md-3 mb-4">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        <h5 class="card-title text-muted">Total Items</h5>
+                        <h3 class="card-text">{{ total_items }}</h3>
+                        <small class="text-muted">Items currently in stock</small>
+                    </div>
+                </div>
+            </div>
+            <!-- Inventory Value -->
+            <div class="col-md-3 mb-4">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        <h5 class="card-title text-muted">Inventory Value</h5>
+                        <h3 class="card-text">${{ "{:.2f}".format(inventory_value) }}</h3>
+                        <small class="text-muted">Total value of inventory</small>
+                    </div>
+                </div>
+            </div>
+            <!-- Low Stock Items -->
+            <div class="col-md-3 mb-4">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        <h5 class="card-title text-muted">Low Stock Items</h5>
+                        <h3 class="card-text">{{ low_stock_items }}</h3>
+                        <small class="text-muted">Items with less than 10 in stock</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Placeholder Sections for Inventory and Recent Activity -->
+        <div class="row mt-4">
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        <h5 class="card-title">Inventory</h5>
+                        <p class="text-muted">Inventory details will be displayed here.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        <h5 class="card-title">Recent Activity</h5>
+                        <p class="text-muted">Recent activity will be displayed here.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

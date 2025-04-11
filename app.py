@@ -105,7 +105,7 @@ def logout():
 #default route
 @app.route('/')
 def home():
-    return "Hello, Flask! Your app is working."
+    return render_template('home.html')
 
 #items routes
 #view items
@@ -168,6 +168,32 @@ def delete_item_route(item_id):
     flash("Item deleted successfully.")
     return redirect(url_for('items'))
 
+#dashboard route
+@app.route('/dashboard')
+@login_required
+def dashboard():
+    conn = sqlite3.connect('inventory.db')
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT COUNT(*) FROM items")
+    total_products = cursor.fetchone()[0]
+
+    cursor.execute("SELECT SUM(quantity) FROM items")
+    total_items = cursor.fetchone()[0] or 0
+
+    cursor.execute("SELECT SUM(quantity * price) FROM items")
+    inventory_value = cursor.fetchone()[0] or 0.0  # Ensure float for currency
+
+    cursor.execute("SELECT COUNT(*) FROM items WHERE quantity < 10")
+    low_stock_items = cursor.fetchone()[0]
+
+    conn.close()
+
+    return render_template('dashboard.html',
+                           total_products=total_products,
+                           total_items=total_items,
+                           inventory_value=inventory_value,
+                           low_stock_items=low_stock_items)
 if __name__ == '__main__':
     init_items_db()
     app.run(debug=True)
