@@ -22,6 +22,7 @@ def load_user(user_id):
         return User(*row)
     return None
 
+#login route
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -49,17 +50,58 @@ def login():
         </form>
     '''
 
+#register route
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        role = 'user' #default role is user
+        confirm_password = request.form['confirm_password']
+        if password != confirm_password:
+            flash("Passwords do not match.")
+            return redirect(url_for('register'))
+        conn = sqlite3.connect('inventory.db')
+        cursor = conn.cursor()
+
+        #check if user already exists
+        cursor.execute("SELECT id FROM users WHERE username = ?", (username,))
+        row = cursor.fetchone()
+
+        if row:
+            flash("Username already exists. Please choose another.")
+        else:
+            # Adds new user to user table
+            cursor.execute("INSERT INTO users (username, password, role) VALUES (?, ?, ?)",
+                           (username, password, role))
+            conn.commit()
+            flash("Registration successful. Please log in.")
+            return redirect(url_for('login')) 
+
+        conn.close()
+
+    return '''
+        <form method="post">
+            <input type="text" name="username" placeholder="Username" required/><br/>
+            <input type="password" name="password" placeholder="Password" required/><br/>
+            <input type="password" name="confirm_password" placeholder="Confirm Password" required/><br/>
+            <input type="submit" value="Register"/>
+        </form>
+    '''
+#protected route
 @app.route('/protected')
 @login_required
 def protected():
     return f"Hello, {current_user.username}! You're logged in."
 
+#log out
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
     return redirect(url_for('login'))
 
+#default route
 @app.route('/')
 def home():
     return "Hello, Flask! Your app is working."
