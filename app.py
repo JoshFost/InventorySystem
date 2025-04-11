@@ -2,7 +2,7 @@ from flask import Flask, redirect, url_for, render_template, request, flash
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from login import User 
 import sqlite3
-from inventory import create_item, view_items, edit_item, delete_item
+from inventory import init_items_db, create_item, view_items, edit_item, delete_item
 
 
 app = Flask(__name__)
@@ -119,6 +119,10 @@ def items():
 @app.route('/add_item', methods=['GET', 'POST'])
 @login_required
 def add_item_route():
+    if current_user.role != 'admin':
+        flash("You do not have permission to access this page.")
+        return redirect(url_for('items'))
+    
     if request.method == 'POST':
         name = request.form['name']
         description = request.form['description']
@@ -133,6 +137,10 @@ def add_item_route():
 @app.route('/edit_item/<int:item_id>', methods=['GET', 'POST'])
 @login_required
 def edit_item_route(item_id):
+    if current_user.role != 'admin':
+        flash("You do not have permission to access this page.")
+        return redirect(url_for('items'))
+    
     if request.method == 'POST':
         name = request.form['name']
         description = request.form['description']
@@ -153,9 +161,13 @@ def edit_item_route(item_id):
 @app.route('/delete_item/<int:item_id>', methods=['POST'])
 @login_required
 def delete_item_route(item_id):
+    if current_user.role != 'admin':
+        flash("You do not have permission to access this page.")
+        return redirect(url_for('items'))
     delete_item(item_id)
     flash("Item deleted successfully.")
     return redirect(url_for('items'))
 
 if __name__ == '__main__':
+    init_items_db()
     app.run(debug=True)

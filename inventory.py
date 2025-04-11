@@ -1,5 +1,6 @@
 import sqlite3
 
+#crud operations for items
 def create_item(name, description, quantity, price):
     conn = sqlite3.connect('inventory.db')
     cursor = conn.cursor()
@@ -33,3 +34,22 @@ def delete_item(item_id):
     conn.commit()
     conn.close()
     print(f"Item with ID {item_id} deleted.")
+
+#initialize the items table
+def init_items_db():
+    conn = sqlite3.connect('inventory.db')
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS items (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            description TEXT,
+            quantity INTEGER NOT NULL,
+            price REAL NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP    
+        )
+    ''')
+    conn.commit()
+    conn.close()
+    print("Items table initialised.")
