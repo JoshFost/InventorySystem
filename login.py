@@ -1,5 +1,7 @@
 import sqlite3
 from flask_login import UserMixin
+from werkzeug.security import generate_password_hash, check_password_hash
+
 
 
 def init_login_db():
@@ -35,13 +37,23 @@ if __name__ == "__main__":
     print("User table initialized.")
 
 #test cases
+#def add_test_user():
+   # conn = sqlite3.connect('inventory.db')
+  #  cursor = conn.cursor()
+  #  cursor.execute("INSERT OR IGNORE INTO users (username, password) VALUES (?, ?)", ("admin", "password"))
+   # conn.commit()
+   # conn.close()
+   # print("Test user added.")
+
 def add_test_user():
     conn = sqlite3.connect('inventory.db')
     cursor = conn.cursor()
-    cursor.execute("INSERT OR IGNORE INTO users (username, password) VALUES (?, ?)", ("admin", "password"))
+    hashed_password = generate_password_hash("password")
+    cursor.execute("INSERT OR IGNORE INTO users (username, password) VALUES (?, ?)", ("admin", hashed_password))
     conn.commit()
     conn.close()
     print("Test user added.")
+
 
 if __name__ == "__main__":
     init_login_db()

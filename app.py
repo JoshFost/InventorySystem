@@ -4,6 +4,8 @@ from login import User
 import sqlite3
 from inventory import init_items_db, add_item, view_items, edit_item, delete_item
 from datetime import datetime
+from werkzeug.security import generate_password_hash
+
 
 app = Flask(__name__)
 app.secret_key = 'supersecretkey'
@@ -75,29 +77,35 @@ def register():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        role = 'user'
         confirm_password = request.form['confirm_password']
+        role = 'user'
+
         if password != confirm_password:
             flash("Passwords do not match.")
             return redirect(url_for('register'))
+
+        hashed_password = generate_password_hash(password)
+
         conn = sqlite3.connect('inventory.db')
         cursor = conn.cursor()
 
+        # Check if the username already exists
         cursor.execute("SELECT id FROM users WHERE username = ?", (username,))
-        row = cursor.fetchone()
+        existing_user = cursor.fetchone()
 
-        if row:
+        if existing_user:
             flash("Username already exists. Please choose another.")
         else:
             cursor.execute("INSERT INTO users (username, password, role) VALUES (?, ?, ?)",
-                           (username, password, role))
+                           (username, hashed_password, role))
             conn.commit()
-            flash("Registration successful. Please log in.")
-            return redirect(url_for('login')) 
+            flash("Registration successful. Please log in.", "success")
+            conn.close()
+            return redirect(url_for('login'))
 
         conn.close()
 
-    return render_template('register.html') 
+    return render_template('register.html')
 #protected route
 @app.route('/protected')
 @login_required
