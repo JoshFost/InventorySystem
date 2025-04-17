@@ -12,14 +12,14 @@
         <!-- Sidebar -->
         <nav class="sidebar">
             <div class="logo">
-                <h2>StockTrack</h2>
-                <p>Inventory System</p>
+                <h2>StockTracker</h2>
+                <p>Inventory Managagement</p>
             </div>
             <ul>
                 <li><a href="{{ url_for('dashboard') }}" class="{% if request.endpoint == 'dashboard' %}active{% endif %}">Dashboard</a></li>
                 <li><a href="{{ url_for('items') }}" class="{% if request.endpoint == 'items' %}active{% endif %}">Inventory</a></li>
                 {% if current_user.is_authenticated and current_user.role == 'admin' %}
-                    <li><a href="{{ url_for('add_item') }}" class="{% if request.endpoint == 'add_item' %}active{% endif %}">Add Item</a></li>
+                    <li><a href="{{ url_for('add_item_route') }}" class="{% if request.endpoint == 'add_item' %}active{% endif %}">Add Item</a></li>
                 {% endif %}
                 <li><a href="#">Orders</a></li>
                 <li><a href="#">Customers</a></li>
@@ -44,6 +44,8 @@
 
         <!-- Main Content -->
         <div class="main-content">
+            <!-- Only show the header if the user is authenticated -->
+            {% if current_user.is_authenticated %}
             <header>
                 <div class="search-bar">
                     <input type="text" placeholder="Search inventory...">
@@ -56,6 +58,20 @@
                     {% endif %}
                 </div>
             </header>
+            {% endif %}
+
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show mt-3" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
             <div class="content">
                 {% block content %}
                 {% endblock %}

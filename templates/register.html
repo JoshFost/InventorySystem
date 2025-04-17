@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+ 
+    <style>
+        .sidebar {
+            display: none;
+        }
+        .main-content {
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            
+        }
+    </style>
+
+    <div class="card shadow border-0" style="width: 100%; max-width: 400px; background-color: rgba(255, 255, 255, 0.95);">
+        <div class="card-body p-4">
+            <!-- Branding -->
+            <div class="text-center mb-4">
+                <h2 class="fw-bold">StockTracker</h2>
+                <p class="text-muted">Inventory Managagement</p>
+            </div>
+
+            <!-- Form Header -->
+            <h3 class="card-title fw-bold mb-2">Register</h3>
+            <p class="text-muted mb-4">Create your account to get started</p>
+
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ messages[0] }}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <!-- Register Form -->
+            <form method="POST" novalidate>
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username" required>
+                    <div class="invalid-feedback">
+                        Please enter a username.
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+                    <div class="invalid-feedback">
+                        Please enter a password.
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="confirm_password" class="form-label">Confirm Password</label>
+                    <input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="Confirm your password" required>
+                    <div class="invalid-feedback">
+                        Please confirm your password.
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Register</button>
+            </form>
+
+            <!-- Login Link -->
+            <p class="text-center mt-3">
+                Already have an account? <a href="{{ url_for('login') }}" class="text-primary">Login</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Bootstrap form validation -->
+    <script>
+        (function () {
+            'use strict';
+            const forms = document.querySelectorAll('form');
+            forms.forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+    </script>
+{% endblock %}

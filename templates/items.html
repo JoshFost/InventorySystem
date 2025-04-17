@@ -8,7 +8,7 @@
         <p class="lead text-muted">Manage your inventory items here</p>
 
         {% if current_user.role == 'admin' %}
-            <a href="{{ url_for('add_item') }}" class="btn btn-primary mb-4">Add New Item</a>
+            <a href="{{ url_for('add_item_route') }}" class="btn btn-primary mb-4">Add New Item</a>
         {% endif %}
 
         {% if items %}
@@ -33,7 +33,7 @@
                                 <td>{{ item[1] }}</td>
                                 <td>{{ item[2] }}</td>
                                 <td>{{ item[3] }}</td>
-                                <td>${{ "{:.2f}".format(item[4]) }}</td>
+                                <td>£{{ "{:.2f}".format(item[4]) }}</td>
                                 {% if current_user.role == 'admin' %}
                                     <td>
                                         <a href="{{ url_for('edit_item_route', item_id=item[0]) }}" class="btn btn-sm btn-outline-primary">Edit</a>

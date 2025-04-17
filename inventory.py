@@ -1,7 +1,7 @@
 import sqlite3
 
-#crud operations for items
-def create_item(name, description, quantity, price):
+# CRUD operations for items
+def add_item(name, description, quantity, price):
     conn = sqlite3.connect('inventory.db')
     cursor = conn.cursor()
     cursor.execute("INSERT INTO items (name, description, quantity, price) VALUES (?, ?, ?, ?)",
@@ -10,8 +10,10 @@ def create_item(name, description, quantity, price):
     conn.close()
     print(f"Item '{name}' created.")
 
+    
+
 def view_items():
-    conn= sqlite3.connect('inventory.db')
+    conn = sqlite3.connect('inventory.db')
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM items")
     items = cursor.fetchall()
@@ -35,7 +37,7 @@ def delete_item(item_id):
     conn.close()
     print(f"Item with ID {item_id} deleted.")
 
-#initialize the items table
+# Initialize the items table
 def init_items_db():
     conn = sqlite3.connect('inventory.db')
     cursor = conn.cursor()
@@ -43,7 +45,7 @@ def init_items_db():
         CREATE TABLE IF NOT EXISTS items (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
-            description TEXT,
+            description TEXT,  -- Added description column
             quantity INTEGER NOT NULL,
             price REAL NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -52,4 +54,4 @@ def init_items_db():
     ''')
     conn.commit()
     conn.close()
-    print("Items table initialised.")
+    print("Items table initialized.")

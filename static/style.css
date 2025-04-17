@@ -121,3 +121,19 @@ small {
 .col-md-3 {
     min-width: 200px;
 }
+/* Additional styles for login page */
+.form-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+.alert-danger {
+    border-radius: 8px;
+}
