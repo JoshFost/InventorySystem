@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Welcome to the Inventory Management App</h1>
+
+{% if current_user.is_authenticated %}
+    <p>You are logged in as <strong>{{ current_user.username }}</strong>.</p>
+    <p>Use the navigation above to manage items.</p>
+{% else %}
+    <p>Please <a href="{{ url_for('login') }}">log in</a> or <a href="{{ url_for('register') }}">register</a> to continue.</p>
+{% endif %}
+{% endblock %}
